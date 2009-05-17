@@ -131,7 +131,7 @@
 
 	</dependencies>
 	<scm>
-		<connection>scm:git:git://github.com/tobrien/yes-api.git</connection>
-		<url>scm:git:git://github.com/tobrien/yes-api.git</url>
-		<developerConnection>scm:git:git://github.com/tobrien/yes-api.git</developerConnection>	</scm>
+		<connection>scm:git:git://github.com/tobrien/docbook-plugin.git</connection>
+		<url>scm:git:git://github.com/tobrien/docbook-plugin.git</url>
+		<developerConnection>scm:git:git://github.com/tobrien/docbook-plugin.git</developerConnection>	</scm>
 </project>
