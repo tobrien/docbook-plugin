@@ -17,6 +17,28 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.scm</groupId>
+						<artifactId>maven-scm-provider-gitexe</artifactId>
+						<version>1.2-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.scm</groupId>
+						<artifactId>maven-scm-provider-gitexe
+            </artifactId>
+						<version>1.2-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -109,21 +131,26 @@
 		</dependency>
 
 	</dependencies>
-    <distributionManagement>
- <repository>
-      <id>cjcook-releases</id>
-      <name>Common Java Cookbook M2 Repository</name>
-      <url>dav:https://dav.codehaus.org/repository/cjcook/</url>
-    </repository>
-    <snapshotRepository>
-      <id>cjcook-snapshots</id>
-      <name>Common Java Cookbook Snapshots M2 Repository</name>
-      <url>dav:https://dav.codehaus.org/snapshots.repository/cjcook/</url>
-    </snapshotRepository>
-    <site>
-      <id>cjcook-releases</id>
-      <url>dav:https://dav.codehaus.org/cjcook/docbook-plugin</url>
-    </site>
+	<distributionManagement>
+		<repository>
+			<id>cjcook-releases</id>
+			<name>Common Java Cookbook M2 Repository</name>
+			<url>dav:https://dav.codehaus.org/repository/cjcook/</url>
+		</repository>
+		<snapshotRepository>
+			<id>cjcook-snapshots</id>
+			<name>Common Java Cookbook Snapshots M2 Repository</name>
+			<url>dav:https://dav.codehaus.org/snapshots.repository/cjcook/</url>
+		</snapshotRepository>
+		<site>
+			<id>cjcook-releases</id>
+			<url>dav:https://dav.codehaus.org/cjcook/docbook-plugin</url>
+		</site>
 
-    </distributionManagement>
+	</distributionManagement>
+	<scm>
+		<connection>scm:git:git://github.com/tobrien/docbook-plugin.git</connection>
+		<url>scm:git:git://github.com/tobrien/docbook-plugin.git</url>
+		<developerConnection>scm:git:git://github.com/tobrien/docbook-plugin.git</developerConnection>
+	</scm>
 </project>
