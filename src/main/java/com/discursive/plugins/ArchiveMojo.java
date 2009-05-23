@@ -2,8 +2,6 @@ package com.discursive.plugins;
 
 import java.io.File;
 
-import org.apache.maven.plugin.jar.AbstractJarMojo;
-
 /**
  * Goal to create a JAR-package containing all the source files of a DocBook book.
  * 
