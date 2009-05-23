@@ -1,31 +1,18 @@
-<<<<<<< HEAD:target/pom-transformed.xml
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-=======
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
->>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:target/pom-transformed.xml
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.discursive.plugins</groupId>
 	<artifactId>docbook-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-<<<<<<< HEAD:target/pom-transformed.xml
 	<version>1.0-SNAPSHOT</version>
-=======
-	<version>1.0</version>
->>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:target/pom-transformed.xml
 	<name>docbook-plugin Maven Mojo</name>
 	<url>http://maven.apache.org</url>
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-<<<<<<< HEAD:target/pom-transformed.xml
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
+<<<<<<< HEAD:pom.xml~
 =======
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<dependencies>
 					<dependency>
@@ -49,6 +36,7 @@
 				</dependencies>
 			</plugin>
 			<plugin>
+>>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:pom.xml~
 				<groupId>org.codehaus.plexus</groupId>
 				<artifactId>plexus-component-metadata</artifactId>
 				<executions>
@@ -67,7 +55,6 @@
 						</configuration>
 					</execution>
 				</executions>
->>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:target/pom-transformed.xml
 			</plugin>
 		</plugins>
 	</build>
@@ -144,47 +131,23 @@
 			<version>1.1</version>
 			<scope>test</scope>
 		</dependency>
-<<<<<<< HEAD:target/pom-transformed.xml
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
-		</dependency>
-		<dependency>
-			<groupId>dom4j</groupId>
-			<artifactId>dom4j</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>jaxen</groupId>
-			<artifactId>jaxen</artifactId>
-			<version>1.1.1</version>
-		</dependency>
 
 	</dependencies>
+<<<<<<< HEAD:pom.xml~
     <distributionManagement>
- <repository>
-      <id>cjcook-releases</id>
-      <name>Common Java Cookbook M2 Repository</name>
-      <url>dav:https://dav.codehaus.org/repository/cjcook/</url>
-    </repository>
-    <snapshotRepository>
-      <id>cjcook-snapshots</id>
-      <name>Common Java Cookbook Snapshots M2 Repository</name>
-      <url>dav:https://dav.codehaus.org/snapshots.repository/cjcook/</url>
-    </snapshotRepository>
-    <site>
-      <id>cjcook-releases</id>
-      <url>dav:https://dav.codehaus.org/cjcook/docbook-plugin</url>
-    </site>
-
+      <repository>
+        <id>cjcook-releases</id>
+        <url>https://dav.codehaus.org/repository/cjcook/org/codehaus/cjcook/</url>
+      </repository>
+      <snapshotRepository>
+        <id>cjcook-snapshots</id>
+        <url>https://dav.codehaus.org/snapshots.repository/cjcook/org/codehaus/cjcook/</url>
+      </snapshotRepository>
     </distributionManagement>
 =======
-
-	</dependencies>
 	<scm>
-		<connection>scm:git:git://github.com/tobrien/docbook-plugin.git</connection>
-		<url>scm:git:git://github.com/tobrien/docbook-plugin.git</url>
-		<developerConnection>scm:git:git://github.com/tobrien/docbook-plugin.git</developerConnection>	</scm>
->>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:target/pom-transformed.xml
+		<connection>scm:git:git://github.com/tobrien/yes-api.git</connection>
+		<url>scm:git:git://github.com/tobrien/yes-api.git</url>
+		<developerConnection>scm:git:git://github.com/tobrien/yes-api.git</developerConnection>	</scm>
+>>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:pom.xml~
 </project>

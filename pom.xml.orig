@@ -1,25 +1,16 @@
-<<<<<<< HEAD:target/pom-transformed.xml
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-=======
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
->>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:target/pom-transformed.xml
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.discursive.plugins</groupId>
 	<artifactId>docbook-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-<<<<<<< HEAD:target/pom-transformed.xml
-	<version>1.0-SNAPSHOT</version>
-=======
 	<version>1.0</version>
->>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:target/pom-transformed.xml
 	<name>docbook-plugin Maven Mojo</name>
 	<url>http://maven.apache.org</url>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-<<<<<<< HEAD:target/pom-transformed.xml
+<<<<<<< HEAD:pom.xml
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<source>1.5</source>
@@ -67,7 +58,7 @@
 						</configuration>
 					</execution>
 				</executions>
->>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:target/pom-transformed.xml
+>>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:pom.xml
 			</plugin>
 		</plugins>
 	</build>
@@ -144,7 +135,6 @@
 			<version>1.1</version>
 			<scope>test</scope>
 		</dependency>
-<<<<<<< HEAD:target/pom-transformed.xml
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -162,6 +152,7 @@
 		</dependency>
 
 	</dependencies>
+<<<<<<< HEAD:pom.xml
     <distributionManagement>
  <repository>
       <id>cjcook-releases</id>
@@ -180,11 +171,9 @@
 
     </distributionManagement>
 =======
-
-	</dependencies>
 	<scm>
 		<connection>scm:git:git://github.com/tobrien/docbook-plugin.git</connection>
 		<url>scm:git:git://github.com/tobrien/docbook-plugin.git</url>
 		<developerConnection>scm:git:git://github.com/tobrien/docbook-plugin.git</developerConnection>	</scm>
->>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:target/pom-transformed.xml
+>>>>>>> 062d1e12c9f23c6570944cd49d52507afa5cbc31:pom.xml
 </project>
