@@ -42,13 +42,13 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 	 * @parameter
 	 */
 	protected String wildcardFilter = "*.xml";
-	
+
 	/**
 	 * @parameter expression="${project.build.sourceDirectory}"
 	 * @required
 	 */
 	protected File sourceDir;
-	
+
 	/**
 	 * @parameter
 	 */
@@ -58,6 +58,51 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 	 * @parameter
 	 */
 	protected Boolean validateSectionIds = true;
+
+	/**
+	 * @parameter
+	 */
+	protected Boolean validateExampleIds = true;
+
+	/**
+	 * @parameter
+	 */
+	protected Boolean validateFigureIds = true;
+
+	/**
+	 * @parameter
+	 */
+	protected String filenamePattern = "${elementName}-${elementId}.xml";
+
+	/**
+	 * @parameter
+	 */
+	protected String figureIdPattern = "${elementId}-fig-.*";
+
+	/**
+	 * @parameter
+	 */
+	protected String sectionIdPattern = "${elementId}-sect-.*";
+
+	/**
+	 * @parameter
+	 */
+	protected String exampleIdPattern = "${elementId}-ex-.*";
+
+	/**
+	 * @parameter
+	 */
+	protected String figureXPath = "//figure";
+
+	/**
+	 * @parameter
+	 */
+	protected String sectionXPath = "//section";
+
+	/**
+	 * @parameter
+	 */
+	protected String exampleXPath = "//example";
 
 	private List<String> validationFailures = new ArrayList<String>();
 
@@ -77,8 +122,8 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 		}
 
 		if (validationFailures.size() > 0) {
-			throw new MojoFailureException("\n" + StringUtils.join(validationFailures
-					.iterator(), "\n"));
+			throw new MojoFailureException("\n"
+					+ StringUtils.join(validationFailures.iterator(), "\n"));
 		}
 
 	}
@@ -98,63 +143,71 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 					+ rootElement.getName();
 			validationFailures.add(failure);
 		}
-		
-		String fileNameRegex = rootElement.getName() + "-(.*).xml";
 
-		System.out.println( fileNameRegex );
-		
-		System.out.println( fileName );
-
-		Pattern p = Pattern.compile( fileNameRegex.trim() );
-		Matcher m = p.matcher( fileName.trim() );
-		String fileId = m.group( 1 );
-
-		
-		if( !fileName.matches( fileNameRegex ) ) {
-			String failure = "File: " + fileName + " does not follow the regex: " + fileNameRegex;
-			validationFailures.add( failure );
+		String fileNameRegex = StringUtils.replace(filenamePattern,
+				"${elementName}", rootElement.getName());
+		fileNameRegex = StringUtils.replace(fileNameRegex, "${elementId}",
+				"(.*)");
+		Pattern p = Pattern.compile(fileNameRegex.trim());
+		Matcher m = p.matcher(fileName.trim());
+		if (!m.matches()) {
+			String failure = "File: " + fileName
+					+ " does not follow the regex: " + fileNameRegex;
+			validationFailures.add(failure);
 			return;
 		}
 
-		
-		
+		String fileId = m.group(1);
+
 		Attribute idAttr = rootElement.attribute("id");
 		String elementId = idAttr.getValue();
-		
-		if( !fileId.equals( elementId ) ) {
-			String failure = "File: " + fileName + " the identfier from the filename '" + fileId + "' does not match the root element id of '" + elementId + "'";
-			validationFailures.add( failure );
+
+		if (!fileId.equals(elementId)) {
+			String failure = "File: " + fileName
+					+ " the identfier from the filename '" + fileId
+					+ "' does not match the root element id of '" + elementId
+					+ "'";
+			validationFailures.add(failure);
 		}
-		
-		
-		if( validateSectionIds ) {
-			validateSectionIds(fileName, doc, elementId);
+
+		if (validateSectionIds) {
+			validateIds(fileName, doc, elementId, sectionXPath, sectionIdPattern, "Section");
 		}
-		
-		
+
+		if (validateExampleIds) {
+			validateIds(fileName, doc, elementId, exampleXPath, exampleIdPattern, "Example");
+		}
+
+		if (validateFigureIds) {
+			validateIds(fileName, doc, elementId, figureXPath, figureIdPattern, "Figure");
+		}
 	}
 
-	private void validateSectionIds(String fileName, Document doc,
-			String elementId) {
-		List<Node> nodes = new ArrayList<Node>( doc.selectNodes("//section") );
+	private void validateIds(String fileName, Document doc, String elementId,
+			String xpath, String idPattern, String type) {
+		List selectNodes = doc.selectNodes(xpath);
+		List<Node> nodes = new ArrayList<Node>(selectNodes);
 		int i = 1;
-		for( Node node : nodes ) {
+		for (Node node : nodes) {
 			Element section = (Element) node;
 			Attribute sectIdAttr = section.attribute("id");
-			if( sectIdAttr == null ) {
-				String failure = "File: " + fileName + " Section #" + i + " lacks an identifier";
-				validationFailures.add( failure );
-				continue;
+			if (sectIdAttr == null) {
+				String failure = "File: " + fileName + " " + type + " #" + i
+						+ " lacks an identifier";
+				validationFailures.add(failure);
+			} else {
+
+				String sectId = sectIdAttr.getValue();
+
+				String regex = StringUtils.replace(idPattern, "${elementId}",
+						elementId);
+				if (!sectId.matches(regex)) {
+					String failure = "File: " + fileName + " " + type + " "
+							+ sectId + " does not match regex " + regex;
+					validationFailures.add(failure);
+				}
 			}
-			
-			String sectId = sectIdAttr.getValue();
-			String regex = elementId + "-sect-.*";
-			if( !sectId.matches( regex ) ) {
-				String failure = "File: " + fileName + " Section " + sectId + " does not match regex " + regex;
-				validationFailures.add( failure );
-			}
-			
-			
+
 			i++;
 		}
 	}
