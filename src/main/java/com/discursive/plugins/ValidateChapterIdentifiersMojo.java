@@ -22,8 +22,6 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
-import sun.security.x509.AVA;
-
 /**
  * This Mojo simply verifies that each chapter has an appropriate identifer.
  * 
@@ -44,17 +42,29 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 	 * @parameter
 	 */
 	protected String wildcardFilter = "*.xml";
+	
+	/**
+	 * @parameter expression="${project.build.sourceDirectory}"
+	 * @required
+	 */
+	protected File sourceDir;
+	
+	/**
+	 * @parameter
+	 */
+	protected Boolean validateElementIds = true;
+
+	/**
+	 * @parameter
+	 */
+	protected Boolean validateSectionIds = true;
 
 	private List<String> validationFailures = new ArrayList<String>();
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
-		String sourceDir = project.getBuild().getSourceDirectory();
-		System.out.println(sourceDir);
-
-		File dir = new File(sourceDir);
 		FileFilter fileFilter = new WildcardFileFilter(wildcardFilter);
-		File[] xmlFiles = dir.listFiles(fileFilter);
+		File[] xmlFiles = sourceDir.listFiles(fileFilter);
 		for (int i = 0; i < xmlFiles.length; i++) {
 
 			try {
@@ -89,15 +99,24 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 			validationFailures.add(failure);
 		}
 		
-		String fileNameRegex = rootElement.getName() + "-(.*)\\.xml";
+		String fileNameRegex = rootElement.getName() + "-(.*).xml";
+
+		System.out.println( fileNameRegex );
+		
+		System.out.println( fileName );
+
+		Pattern p = Pattern.compile( fileNameRegex.trim() );
+		Matcher m = p.matcher( fileName.trim() );
+		String fileId = m.group( 1 );
+
+		
 		if( !fileName.matches( fileNameRegex ) ) {
 			String failure = "File: " + fileName + " does not follow the regex: " + fileNameRegex;
 			validationFailures.add( failure );
 			return;
 		}
 
-		String fileId = fileName.replaceFirst( rootElement.getName() + "-", "");
-		fileId = fileId.replaceFirst( ".xml", "");
+		
 		
 		Attribute idAttr = rootElement.attribute("id");
 		String elementId = idAttr.getValue();
@@ -107,6 +126,16 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 			validationFailures.add( failure );
 		}
 		
+		
+		if( validateSectionIds ) {
+			validateSectionIds(fileName, doc, elementId);
+		}
+		
+		
+	}
+
+	private void validateSectionIds(String fileName, Document doc,
+			String elementId) {
 		List<Node> nodes = new ArrayList<Node>( doc.selectNodes("//section") );
 		int i = 1;
 		for( Node node : nodes ) {
@@ -119,7 +148,7 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 			}
 			
 			String sectId = sectIdAttr.getValue();
-			String regex = fileId + "-sect-.*";
+			String regex = elementId + "-sect-.*";
 			if( !sectId.matches( regex ) ) {
 				String failure = "File: " + fileName + " Section " + sectId + " does not match regex " + regex;
 				validationFailures.add( failure );
@@ -128,8 +157,6 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 			
 			i++;
 		}
-		
-		
 	}
 
 	public Document parse(URL url) throws DocumentException {
