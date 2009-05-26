@@ -44,10 +44,10 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 	protected String wildcardFilter = "*.xml";
 
 	/**
-	 * @parameter expression="${project.build.sourceDirectory}"
+	 * @parameter expression="${project.build.outputDirectory}"
 	 * @required
 	 */
-	protected File sourceDir;
+	protected File outputDir;
 
 	/**
 	 * @parameter
@@ -109,7 +109,7 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		FileFilter fileFilter = new WildcardFileFilter(wildcardFilter);
-		File[] xmlFiles = sourceDir.listFiles(fileFilter);
+		File[] xmlFiles = outputDir.listFiles(fileFilter);
 		for (int i = 0; i < xmlFiles.length; i++) {
 
 			try {
