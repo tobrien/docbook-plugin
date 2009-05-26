@@ -214,11 +214,23 @@ public class InjectExamplesMojo extends AbstractMojo {
 					
 					String startString = "// START " + excerpt;
 					String endString = "// END " + excerpt;
+					String omitString = "// OMIT " + excerpt;
+					String endOmitString = "// END OMIT " + excerpt;
 					
 					String excerptContent = fileContent.substring( fileContent.indexOf( startString ) + startString.length(),
 																   fileContent.indexOf( endString ) );
 					excerptContent = StringUtils.replace( excerptContent, "\r\n", "\n");
 					excerptContent = StringUtils.replace( excerptContent, "\t", "  " );
+					
+					int omitIndex = excerptContent.indexOf( omitString );
+					while( omitIndex != -1 ) {
+					
+						String extracted = excerptContent.substring( 0, excerptContent.indexOf( omitString ) );
+						extracted += excerptContent.substring( excerptContent.indexOf( endOmitString ) + endOmitString.length(), excerptContent.length() );
+						excerptContent = extracted;
+						omitIndex = excerptContent.indexOf( omitString );
+					}
+					
 					pl.setTextContent( excerptContent );
 					
 				}
