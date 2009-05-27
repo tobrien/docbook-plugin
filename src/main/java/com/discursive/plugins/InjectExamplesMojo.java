@@ -305,6 +305,7 @@ public class InjectExamplesMojo extends AbstractMojo {
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(namespaceAware); // never forget this!
+		factory.setValidating( false );
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document doc = builder.parse(url.openStream(), "test");
 		return doc;

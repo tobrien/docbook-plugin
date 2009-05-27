@@ -214,6 +214,7 @@ public class ValidateChapterIdentifiersMojo extends AbstractMojo {
 
 	public Document parse(URL url) throws DocumentException {
 		SAXReader reader = new SAXReader();
+		reader.setValidation( false );
 		Document document = reader.read(url);
 		return document;
 	}
