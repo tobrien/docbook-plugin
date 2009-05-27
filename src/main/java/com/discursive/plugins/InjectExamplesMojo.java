@@ -1,5 +1,6 @@
 package com.discursive.plugins;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -137,102 +138,115 @@ public class InjectExamplesMojo extends AbstractMojo {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Element pl = (Element) nodes.item(i);
 			String artifact = pl.getAttributeNS(attributeNamespace, "artifact");
+
 			if (artifact != null && !artifact.equals("")) {
-				String groupId, artifactId, version, classifier, packaging;
-				String[] tokens = StringUtils.split(artifact, ":");
-				if (tokens.length != 5)
-					throw new MojoFailureException(
-							"Invalid artifact, you must specify "
-									+ "groupId:artifactId:version:classifier:packaging"
-									+ artifact);
-				groupId = tokens[0];
-				artifactId = tokens[1];
-				version = tokens[2];
-				classifier = tokens[3];
-				packaging = tokens[4];
+				File artifactFile = getArtifact(artifact);
 
-				Artifact toDownload = artifactFactory
-						.createArtifactWithClassifier(groupId, artifactId,
-								version, packaging, classifier);
-				System.out.println(toDownload.toString());
+				String type = pl.getAttributeNS(attributeNamespace, "type");
 
-				String path = localRepository.pathOf(toDownload);
-				System.out.println(path);
+				if (type != null && !StringUtils.isEmpty(type)
+						&& type.equalsIgnoreCase("exec")) {
 
-				File artifactFile = new File(localRepository.getBasedir(), path);
-
-				String filename = pl.getAttributeNS(attributeNamespace, "file");
-
-				UnArchiver unArchiver;
-
-				unArchiver = archiverManager.getUnArchiver(artifactFile);
-
-				unArchiver.setSourceFile(artifactFile);
-
-				String property = "java.io.tmpdir";
-				// Get the temporary directory and print it.
-				String tempDirPath = System.getProperty(property);
-
-				File tempDir = new File(tempDirPath);
-				try {
-					unArchiver.extract(filename, tempDir);
-				} catch (ArchiverException e) {
-					throw new MojoExecutionException(
-							"Error finding archiver for file");
-				}
-
-				File workingFile = new File(tempDir, filename);
-				System.out.println("Working File: " + workingFile.toString());
-
-				String xpath1 = pl.getAttributeNS(attributeNamespace, "xpath");
-				String excerpt = pl.getAttributeNS( attributeNamespace, "excerpt");
-
-				if (xpath1 != null && !StringUtils.isEmpty(xpath1)) {
-					Document workingDoc = parse(workingFile.toURL(), false);
-					XPath xpath2 = factory.newXPath();
-					XPathExpression expr2 = xpath2.compile(xpath1);
-					System.out.println(xpath1);
-					Object result2 = expr2.evaluate(workingDoc,
-							XPathConstants.NODESET);
-					NodeList result2List = (NodeList) result2;
-					System.out.println();
+					String mainClass = pl.getAttributeNS(attributeNamespace, "main-class");
+					
+					Process p = Runtime.getRuntime().exec("java -cp " + artifactFile.getPath() + " " + mainClass );
 
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					StreamResult result1 = new StreamResult(baos);
-					DOMSource domSource = new DOMSource(result2List.item(0));
-					Transformer transformer = TransformerFactory.newInstance()
-							.newTransformer();
-					transformer
-							.setOutputProperty("omit-xml-declaration", "yes");
-					transformer.transform(domSource, result1);
+					IOUtils.copy( p.getInputStream(), baos );
 					String content = baos.toString("UTF-8");
 					System.out.println(content);
 					pl.setTextContent(content);
-				} else if( excerpt != null && !StringUtils.isEmpty( excerpt )){
+				} else {
+
+					String filename = pl.getAttributeNS(attributeNamespace,
+							"file");
 					
-					String fileContent = IOUtils.toString( new FileInputStream( workingFile ) );
-					
-					String startString = "// START " + excerpt;
-					String endString = "// END " + excerpt;
-					String omitString = "// OMIT " + excerpt;
-					String endOmitString = "// END OMIT " + excerpt;
-					
-					String excerptContent = fileContent.substring( fileContent.indexOf( startString ) + startString.length(),
-																   fileContent.indexOf( endString ) );
-					excerptContent = StringUtils.replace( excerptContent, "\r\n", "\n");
-					excerptContent = StringUtils.replace( excerptContent, "\t", "  " );
-					
-					int omitIndex = excerptContent.indexOf( omitString );
-					while( omitIndex != -1 ) {
-					
-						String extracted = excerptContent.substring( 0, excerptContent.indexOf( omitString ) );
-						extracted += excerptContent.substring( excerptContent.indexOf( endOmitString ) + endOmitString.length(), excerptContent.length() );
-						excerptContent = extracted;
-						omitIndex = excerptContent.indexOf( omitString );
+					getLog().info( "Working on File: " + filename );
+
+					UnArchiver unArchiver;
+
+					unArchiver = archiverManager.getUnArchiver(artifactFile);
+
+					unArchiver.setSourceFile(artifactFile);
+
+					String property = "java.io.tmpdir";
+					// Get the temporary directory and print it.
+					String tempDirPath = System.getProperty(property);
+
+					File tempDir = new File(tempDirPath);
+					try {
+						unArchiver.extract(filename, tempDir);
+					} catch (ArchiverException e) {
+						throw new MojoExecutionException(
+								"Error finding archiver for file");
 					}
-					
-					pl.setTextContent( excerptContent );
-					
+
+					File workingFile = new File(tempDir, filename);
+					System.out.println("Working File: "
+							+ workingFile.toString());
+
+					String xpath1 = pl.getAttributeNS(attributeNamespace,
+							"xpath");
+					String excerpt = pl.getAttributeNS(attributeNamespace,
+							"excerpt");
+
+					if (xpath1 != null && !StringUtils.isEmpty(xpath1)) {
+						Document workingDoc = parse(workingFile.toURL(), false);
+						XPath xpath2 = factory.newXPath();
+						XPathExpression expr2 = xpath2.compile(xpath1);
+						System.out.println(xpath1);
+						Object result2 = expr2.evaluate(workingDoc,
+								XPathConstants.NODESET);
+						NodeList result2List = (NodeList) result2;
+						System.out.println();
+
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						StreamResult result1 = new StreamResult(baos);
+						DOMSource domSource = new DOMSource(result2List.item(0));
+						Transformer transformer = TransformerFactory
+								.newInstance().newTransformer();
+						transformer.setOutputProperty("omit-xml-declaration",
+								"yes");
+						transformer.transform(domSource, result1);
+						String content = baos.toString("UTF-8");
+						System.out.println(content);
+						pl.setTextContent(content);
+					} else if (excerpt != null && !StringUtils.isEmpty(excerpt)) {
+
+						getLog().info( "Working on excerpt: " + excerpt);
+						String fileContent = IOUtils
+								.toString(new FileInputStream(workingFile));
+
+						String startString = "// START " + excerpt;
+						String endString = "// END " + excerpt;
+						String omitString = "// OMIT " + excerpt;
+						String endOmitString = "// END OMIT " + excerpt;
+
+						String excerptContent = fileContent.substring(
+								fileContent.indexOf(startString)
+										+ startString.length(), fileContent
+										.indexOf(endString));
+						excerptContent = StringUtils.replace(excerptContent,
+								"\r\n", "\n");
+						excerptContent = StringUtils.replace(excerptContent,
+								"\t", "  ");
+
+						int omitIndex = excerptContent.indexOf(omitString);
+						while (omitIndex != -1) {
+
+							String extracted = excerptContent.substring(0,
+									excerptContent.indexOf(omitString));
+							extracted += excerptContent.substring(
+									excerptContent.indexOf(endOmitString)
+											+ endOmitString.length(),
+									excerptContent.length());
+							excerptContent = extracted;
+							omitIndex = excerptContent.indexOf(omitString);
+						}
+
+						pl.setTextContent(excerptContent);
+
+					}
 				}
 
 			}
@@ -243,11 +257,48 @@ public class InjectExamplesMojo extends AbstractMojo {
 		DOMSource domSource = new DOMSource(doc);
 		Transformer transformer = TransformerFactory.newInstance()
 				.newTransformer();
-		
-		transformer.setOutputProperty( "doctype-public", "-//OASIS//DTD DocBook XML V4.5//EN");
-		transformer.setOutputProperty( "doctype-system", "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd");
+
+		transformer.setOutputProperty("doctype-public",
+				"-//OASIS//DTD DocBook XML V4.5//EN");
+		transformer.setOutputProperty("doctype-system",
+				"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd");
 		transformer.transform(domSource, result1);
 
+	}
+
+	private File getArtifact(String artifact) throws MojoFailureException {
+		String groupId, artifactId, version, classifier, packaging;
+		String[] tokens = StringUtils.split(artifact, ":");
+		if (tokens.length != 3 && tokens.length != 5)
+			throw new MojoFailureException(
+					"Invalid artifact, you must specify "
+							+ "groupId:artifactId:version:classifier:packaging"
+							+ artifact);
+		groupId = tokens[0];
+		artifactId = tokens[1];
+		version = tokens[2];
+
+		Artifact toDownload = null;
+		if (tokens.length == 5) {
+			classifier = tokens[3];
+			packaging = tokens[4];
+			toDownload = artifactFactory
+					.createArtifactWithClassifier(groupId, artifactId,
+							version, packaging, classifier);
+		} else {
+			packaging = "jar";
+			toDownload = artifactFactory.createBuildArtifact(groupId,
+					artifactId, version, packaging);
+
+		}
+
+		System.out.println(toDownload.toString());
+
+		String path = localRepository.pathOf(toDownload);
+		System.out.println(path);
+		
+		File artifactFile = new File(localRepository.getBasedir(), path);
+		return artifactFile;
 	}
 
 	public Document parse(URL url, boolean namespaceAware)
