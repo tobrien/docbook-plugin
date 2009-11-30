@@ -106,6 +106,7 @@ public class WrappifyMojo extends AbstractMojo {
 
 		String fileName = file.getName();
 		Document doc = parse(file.toURL(), true);
+		getLog().info( "Parsing: " + fileName );
 
 		String plXPATH = "//programlisting";
 		String elementName = "Program Listing";
@@ -152,7 +153,10 @@ public class WrappifyMojo extends AbstractMojo {
 					if (wrap != null && !StringUtils.isEmpty(wrap)) {
 
 						if (wrap.equalsIgnoreCase("force")) {
-							getLog().info( "Forcing a wrap" );
+							getLog().info( "Forcing a wrap in " + fileName + " "
+								+ elementName + " #" + (i+1) + " contains a "
+								+ line.length() + " column line at line " + j
+								+ ".  Greater than " + columnLimit + " limit.  \nLine is" + line );
 							while(line.length() > columnLimit) {
 								newLines.add( line.substring( 0, columnLimit ) );
 								line = line.substring( columnLimit );
@@ -165,9 +169,9 @@ public class WrappifyMojo extends AbstractMojo {
 					} else {
 
 						validationFailures.add("File: " + fileName + " "
-								+ elementName + " #" + i + " contains a "
+								+ elementName + " #" + (i+1) + " contains a "
 								+ line.length() + " column line at line " + j
-								+ ".  Greater than " + columnLimit + " limit.");
+								+ ".  Greater than " + columnLimit + " limit.  \nLine is: " + line);
 					}
 				} else {
 					newLines.add( line );
