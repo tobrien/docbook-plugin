@@ -74,6 +74,20 @@ public class WrappifyMojo extends AbstractMojo {
 	 */
 	private int columnLimit = 100;
 
+	/**
+	 * The public doctype for DocBook DTD
+	 * 
+	 * @parameter
+	 */
+	protected String doctypePublic = "-//OASIS//DTD DocBook XML V4.5//EN";
+
+	/**
+	 * The system doctype for DocBook DTD
+	 * 
+	 * @parameter
+	 */
+	protected String doctypeSystem = "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd";
+
 	private List<String> validationFailures = new ArrayList<String>();
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -123,10 +137,8 @@ public class WrappifyMojo extends AbstractMojo {
 		Transformer transformer = TransformerFactory.newInstance()
 				.newTransformer();
 
-		transformer.setOutputProperty("doctype-public",
-				"-//OASIS//DTD DocBook XML V4.5//EN");
-		transformer.setOutputProperty("doctype-system",
-				"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd");
+		transformer.setOutputProperty("doctype-public", doctypePublic );
+		transformer.setOutputProperty("doctype-system", doctypeSystem );
 		transformer.transform(domSource, result1);
 
 	}
